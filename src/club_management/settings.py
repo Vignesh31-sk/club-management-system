@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    '_club',
+    '_member'
 ]
 
 MIDDLEWARE = [
@@ -75,12 +77,8 @@ WSGI_APPLICATION = 'club_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "clubs_db",
-        "USER": "django",
-        "PASSWORD": "club@123",
-        "HOST": "localhost",
-        "PORT": "3306"
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
