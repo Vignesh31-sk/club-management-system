@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Club(models.Model):
@@ -13,3 +14,9 @@ class Club(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        if self.president and self.president.membership != self:
+            raise ValidationError(
+                "The president must be a member of the same club.")
+        return super().clean()

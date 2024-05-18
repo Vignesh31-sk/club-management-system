@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     '_club',
-    '_member'
+    '_member',
 ]
 
 MIDDLEWARE = [
