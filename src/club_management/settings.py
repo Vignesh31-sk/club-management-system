@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     '_club',
     '_member',
+    '_faculty',
+    '_event'
 ]
 
 MIDDLEWARE = [

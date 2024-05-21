@@ -6,7 +6,7 @@ class Club(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     president = models.OneToOneField(
-        '_member.Member',
+        '_member.Student',
         null=True,
         blank=True,
         on_delete=models.SET_NULL
