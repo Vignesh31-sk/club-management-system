@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Participation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #0066cc, #003366);
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 3px solid #00509e;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .navbar a:hover {
+            background-color: #004080;
+            transform: scale(1.1);
+        }
+        .content {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            color: #003366;
+            font-weight: 600;
+            text-align: center;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 20px 0;
+        }
+        .card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .card.hidden {
+            display: none;
+        }
+        .nav-button {
+            background-color: #0077cc;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #00509e;
+            transform: scale(1.1);
+        }
+        .nav-button.left {
+            position: absolute;
+            left: 10px;
+        }
+        .nav-button.right {
+            position: absolute;
+            right: 10px;
+        }
+        .animated-bg {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            width: 2000px;
+            height: 2000px;
+            background: radial-gradient(circle, rgba(0,119,204,0.1), rgba(0,51,102,0));
+            transform: translateX(-50%);
+            z-index: -1;
+            animation: rotateBg 20s linear infinite;
+        }
+        @keyframes rotateBg {
+            from { transform: translateX(-50%) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="container">
+        <div class="navbar">
+            <a href="index.html">Home</a>
+            <a href="clubs.html">Clubs</a>
+            <a href="events.html">Events</a>
+            <a href="memberships.html">Club Memberships</a>
+        </div>
+
+        <div id="participations" class="content">
+            <h1>Event Participation</h1>
+            <button class="button" onclick="fetchData()">Fetch Event Participation Data</button>
+            <div class="card-container">
+                <button class="nav-button left" onclick="navigate(-1)">&#60;</button>
+                <div id="participation-card" class="card"></div>
+                <button class="nav-button right" onclick="navigate(1)">&#62;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let data = [];
+        let currentIndex = 0;
+
+        function fetchData() {
+            fetch('/participations')
+                .then(response => response.json())
+                .then(fetchedData => {
+                    data = fetchedData;
+                    currentIndex = 0;
+                    displayData();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayData() {
+            if (data.length > 0) {
+                const card = document.getElementById('participation-card');
+                card.innerHTML = '';
+                const participation = data[currentIndex];
+                for (let key in participation) {
+                    const p = document.createElement('p');
+                    p.textContent = `${key}: ${participation[key]}`;
+                    card.appendChild(p);
+                }
+            }
+        }
+
+        function navigate(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = data.length - 1;
+            if (currentIndex >= data.length) currentIndex = 0;
+            displayData();
+        }
+    </script>
+</body>
+</html>
