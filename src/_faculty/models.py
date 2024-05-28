@@ -6,3 +6,6 @@ class Faculty(models.Model):
     department = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
     clubs = models.ManyToManyField("_club.Club")
+
+    def __str__(self):
+        return self.name
