@@ -1,11 +1,11 @@
 import React from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import { notFound } from "next/navigation";
+import Update from "./update";
 export default async function App() {
   const getClubs = async () => {
     const API = "http://localhost:8000/api/students";
     try {
-      //! Removed caching, so that notfound() is shown when api is not working.
       const response = await fetch(`${API}`, { cache: "no-store" });
       console.log(`response : ${response}`);
       return await response.json();
@@ -21,8 +21,8 @@ export default async function App() {
     <>
       <br></br>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
-        {data.map((students: any) => (
-          <div>
+        {await data.map((students: any) => (
+          <div key={students.SRN}>
             <Card className="py-4">
               <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <p className="text-tiny uppercase font-bold">
@@ -39,6 +39,8 @@ export default async function App() {
                   src="https://nextui.org/images/hero-card-complete.jpeg"
                   width={270}
                 />
+                <br></br>
+                <Update member={students}></Update>
               </CardBody>
             </Card>
           </div>

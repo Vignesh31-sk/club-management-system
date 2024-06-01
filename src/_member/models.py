@@ -13,21 +13,24 @@ class Student(models.Model):
         return self.name
 
     def clean(self):
-
         if self.membership_id is None:
             raise ValidationError("Membership (club) must be specified.")
 
         new_club = self.membership
-        if self.pk:
-            current_member = Student.objects.get(pk=self.pk)
-            current_club = current_member.membership
-            if (
-                current_club != new_club and
-                hasattr(current_member, 'membership') and
-                current_club.president == self
-            ):
-                raise ValidationError(
-                    "The current member is a president."
-                )
+        if self.pk is not None:
+            try:
+                current_member = Student.objects.get(pk=self.pk)
+                current_club = current_member.membership
+                if (
+                    current_club != new_club and
+                    hasattr(current_member, 'membership') and
+                    current_club.president == self
+                ):
+                    raise ValidationError(
+                        "The current member is a president."
+                    )
+            except Student.DoesNotExist:
+                print('Student has not been created yet!')
+                pass  # This can happen if the object is new and doesn't exist in the database yet
 
         return super().clean()
