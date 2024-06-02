@@ -8,6 +8,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+        read_only_fields = ('SRN', 'name')
 
     def get_club_name(self, obj):
         return obj.membership.name if obj.membership else None

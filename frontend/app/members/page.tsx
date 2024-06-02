@@ -1,27 +1,26 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
-import { notFound } from "next/navigation";
 import Update from "./update";
-export default async function App() {
-  const getClubs = async () => {
-    const API = "http://localhost:8000/api/students";
-    try {
-      const response = await fetch(`${API}`, { cache: "no-store" });
-      console.log(`response : ${response}`);
-      return await response.json();
-    } catch (error: any) {
-      console.error(error.message);
-      return notFound();
-    }
-  };
+import { getMembers } from "@/lib/getMembers";
+export default function App() {
+  let [members, setMembers] = useState([]);
 
-  const data: any = await getClubs();
+  useEffect(() => {
+    getMembers().then((data: any) => {
+      if (!data || data.error) {
+        return console.error(data?.error);
+      }
+      setMembers(data);
+      console.log("Members  : ", data);
+    });
+  }, []);
 
   return (
     <>
       <br></br>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
-        {await data.map((students: any) => (
+        {members.map((students: any) => (
           <div key={students.SRN}>
             <Card className="py-4">
               <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">

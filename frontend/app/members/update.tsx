@@ -21,13 +21,23 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState, useEffect } from "react";
+import { getClubs } from "@/lib/getClubs";
+import { updateMember } from "@/lib/updateMember";
 
 const schema = z.object({
   email: z.string().email("Invalid email address").min(1, "Email is required"),
-  club: z.string().min(1, "Club is required"),
+  membership: z.number(),
   semester: z
     .number()
     .min(1, "Semester must be at least 1")
@@ -39,16 +49,27 @@ export default function Update({ member }: { member: any }) {
     resolver: zodResolver(schema),
     defaultValues: {
       email: "",
-      club: "",
       semester: 1,
     },
   });
 
-  function onSubmit(values: z.infer<typeof schema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  async function onSubmit(values: z.infer<typeof schema>) {
     console.log(values);
+    const promise = await updateMember(values, member.SRN);
+    alert(promise?.message);
   }
+
+  let [clubs, setClubs] = useState([]);
+
+  useEffect(() => {
+    getClubs().then((data: any) => {
+      if (!data || data.error) {
+        return console.error(data?.error);
+      }
+      setClubs(data);
+      console.log("Clubs : ", data);
+    });
+  }, []);
 
   return (
     <Sheet>
@@ -89,20 +110,28 @@ export default function Update({ member }: { member: any }) {
 
               <FormField
                 control={form.control}
-                name="club"
+                name="membership"
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="club" className="text-right">
+                    <Label htmlFor="membership" className="text-right">
                       Club
                     </Label>
-                    <FormControl>
-                      <Input
-                        id="club"
-                        placeholder={member.club_name}
-                        {...field}
-                        className="col-span-3"
-                      />
-                    </FormControl>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                    >
+                      <FormControl className="col-span-3">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a Club " />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {clubs.map((club: any) => (
+                          <SelectItem key={club.id} value={club.id.toString()}>
+                            {club.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage className="col-span-3 text-right" />
                   </FormItem>
                 )}
