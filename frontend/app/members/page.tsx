@@ -35,8 +35,14 @@ export default function App() {
                   isZoomed
                   alt="Card background"
                   className="object-cover rounded-xl"
-                  src="https://nextui.org/images/hero-card-complete.jpeg"
+                  src={`https://source.unsplash.com/random/?sig=${students.SRN}`}
                   width={270}
+                  height={180}
+                  style={{
+                    width: "270px",
+                    height: "180px",
+                    objectFit: "cover",
+                  }}
                 />
                 <br></br>
                 <Update member={students}></Update>

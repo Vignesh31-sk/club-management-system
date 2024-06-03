@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Sheet,
   SheetClose,
@@ -45,6 +46,7 @@ const schema = z.object({
 });
 
 export default function Update({ member }: { member: any }) {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -54,9 +56,18 @@ export default function Update({ member }: { member: any }) {
   });
 
   async function onSubmit(values: z.infer<typeof schema>) {
-    console.log(values);
-    const promise = await updateMember(values, member.SRN);
-    alert(promise?.message);
+    try {
+      const promise = await updateMember(values, member.SRN);
+      toast({
+        description: promise?.message,
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error?.message,
+      });
+    }
   }
 
   let [clubs, setClubs] = useState([]);

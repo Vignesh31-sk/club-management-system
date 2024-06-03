@@ -19,18 +19,15 @@ export const updateMember = async (member: any, SRN: string) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (errorData.non_field_errors)
-        return { message: errorData?.non_field_errors };
-      else return { mesage: response.statusText };
+      if (errorData.non_field_errors) throw Error(errorData?.non_field_errors);
+      else throw Error(response.statusText);
     }
-
     const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      return { message: "Updation Success" };
-    } else {
+    if (!(contentType && contentType.includes("application/json"))) {
       throw new Error("Unexpected response format (not JSON).");
     }
+    return { message: "Updation Success" };
   } catch (error: any) {
-    console.log(error);
+    throw Error(error.message);
   }
 };
