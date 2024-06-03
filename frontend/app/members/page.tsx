@@ -1,26 +1,49 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import Update from "./update";
 import { getMembers } from "@/lib/getMembers";
-export default function App() {
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+
+export default function Members() {
   let [members, setMembers] = useState([]);
+  let [currentMember, setcurrentMember] = useState(null);
+  const updateButtonRef = useRef<HTMLButtonElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    getMembers().then((data: any) => {
-      if (!data || data.error) {
-        return console.error(data?.error);
-      }
-      setMembers(data);
-      console.log("Members  : ", data);
-    });
+    console.log("UseEffect 1 !");
+    getMembers()
+      .then((items: any) => {
+        setMembers(items);
+      })
+      .catch((error) => {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: error?.message,
+        });
+      });
+    console.log(members);
   }, []);
+
+  useEffect(() => {
+    console.log("UseEffect 2!");
+    if (currentMember !== null) {
+      console.log("Current Member Updated:", currentMember);
+      // Trigger the update button click
+      if (updateButtonRef.current) {
+        updateButtonRef.current.click();
+      }
+    }
+  }, [currentMember]);
 
   return (
     <>
       <br></br>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
-        {members.map((students: any) => (
+        {members.map((students: any, index) => (
           <div key={students.SRN}>
             <Card className="py-4">
               <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
@@ -45,11 +68,21 @@ export default function App() {
                   }}
                 />
                 <br></br>
-                <Update member={students}></Update>
+                <Button
+                  variant={"outline"}
+                  onClick={() => {
+                    setcurrentMember(members[index]);
+                  }}
+                >
+                  Update
+                </Button>
               </CardBody>
             </Card>
           </div>
         ))}
+        {currentMember && (
+          <Update member={currentMember} triggerUpdate={updateButtonRef} />
+        )}
       </div>
     </>
   );

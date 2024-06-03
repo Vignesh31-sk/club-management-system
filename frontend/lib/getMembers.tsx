@@ -6,7 +6,7 @@ export const getMembers = async () => {
     console.log(`response : ${response}`);
     return await response.json();
   } catch (e: any) {
-    return { message: e.message };
+    throw Error(e);
   }
 };
 

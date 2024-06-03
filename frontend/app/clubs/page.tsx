@@ -11,6 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { getClubs } from "@/lib/getClubs";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Clubs() {
   const plugin = React.useRef(
@@ -18,15 +19,21 @@ export default function Clubs() {
   );
 
   let [clubs, setClubs] = React.useState([]);
+  const { toast } = useToast();
 
   React.useEffect(() => {
-    getClubs().then((data: any) => {
-      if (!data || data.error) {
-        return console.error(data?.error);
-      }
-      setClubs(data);
-      console.log("Clubs : ", data);
-    });
+    getClubs()
+      .then((data: any) => {
+        setClubs(data);
+      })
+      .catch((e) => {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: e?.message,
+        });
+      });
+    console.log(clubs);
   }, []);
 
   return (

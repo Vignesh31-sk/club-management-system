@@ -45,7 +45,13 @@ const schema = z.object({
     .max(8, "Semester must be at most 8"),
 });
 
-export default function Update({ member }: { member: any }) {
+export default function Update({
+  member,
+  triggerUpdate,
+}: {
+  member: any;
+  triggerUpdate: React.RefObject<HTMLButtonElement>;
+}) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -85,7 +91,13 @@ export default function Update({ member }: { member: any }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Update </Button>
+        <Button
+          variant="outline"
+          ref={triggerUpdate}
+          style={{ display: "none" }}
+        >
+          Update
+        </Button>
       </SheetTrigger>
       <SheetContent side="left">
         <Form {...form}>

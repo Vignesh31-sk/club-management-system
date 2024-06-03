@@ -1,9 +1,9 @@
 "use server";
 export const updateMember = async (member: any, SRN: string) => {
-  console.log(member.email);
-  console.log(member.semester);
-  console.log(member.membership);
-  console.log(SRN);
+  console.log("Email : ", member.email);
+  console.log("Semester : ", member.semester);
+  console.log("Membership : ", member.membership);
+  console.log("SRN : ", SRN);
   try {
     const response = await fetch(`http://localhost:8000/api/students/${SRN}/`, {
       method: "PUT",
@@ -28,6 +28,6 @@ export const updateMember = async (member: any, SRN: string) => {
     }
     return { message: "Updation Success" };
   } catch (error: any) {
-    throw Error(error.message);
+    throw Error(error);
   }
 };
