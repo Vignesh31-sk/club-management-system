@@ -8,7 +8,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
-        read_only_fields = ('SRN', 'name')
+        # read_only_fields = ('SRN', 'name') Coundnot perform post function.
 
     def get_club_name(self, obj):
         return obj.membership.name if obj.membership else None

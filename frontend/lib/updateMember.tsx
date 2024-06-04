@@ -1,32 +1,33 @@
 "use server";
-export const updateMember = async (member: any, SRN: string) => {
-  console.log("Email : ", member.email);
-  console.log("Semester : ", member.semester);
-  console.log("Membership : ", member.membership);
-  console.log("SRN : ", SRN);
+export const updateMember = async (updated: any, current: any) => {
+  console.log("Email : ", updated.email);
+  console.log("Semester : ", updated.semester);
+  console.log("Membership : ", updated.membership);
+  console.log("SRN : ", current.SRN);
   try {
-    const response = await fetch(`http://localhost:8000/api/students/${SRN}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: member.email,
-        semester: member.semester,
-        membership: member.membership,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:8000/api/students/${current.SRN}/`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          SRN: current.SRN,
+          name: current.name,
+          email: updated.email,
+          semester: updated.semester,
+          membership: updated.membership,
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (errorData.non_field_errors) throw Error(errorData?.non_field_errors);
-      else throw Error(response.statusText);
+      console.log(errorData);
+      throw Error(JSON.stringify(errorData));
     }
-    const contentType = response.headers.get("content-type");
-    if (!(contentType && contentType.includes("application/json"))) {
-      throw new Error("Unexpected response format (not JSON).");
-    }
-    return { message: "Updation Success" };
+    return { tittle: "Congraulations !", message: "Updation Success" };
   } catch (error: any) {
     throw Error(error);
   }
