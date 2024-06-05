@@ -16,9 +16,9 @@ class Event(models.Model):
         return self.name
 
     def clean(self):
-        if self.club and self.host.club != self.club:
+        if self.host.membership != self.club:
             raise ValidationError(
-                "The host must be a member of the organising club.")
+                "The host must be a member of the specified club.")
         return super().clean()
 
 

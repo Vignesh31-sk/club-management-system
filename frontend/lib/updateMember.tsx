@@ -14,7 +14,7 @@ export const updateMember = async (updated: any, current: any) => {
         },
         body: JSON.stringify({
           SRN: current.SRN,
-          name: current.name,
+          name: updated.name,
           email: updated.email,
           semester: updated.semester,
           membership: updated.membership,

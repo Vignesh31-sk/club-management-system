@@ -35,6 +35,7 @@ import { getClubs } from "@/lib/getClubs";
 import { updateMember } from "@/lib/updateMember";
 
 const schema = z.object({
+  name: z.string().min(1, "Name is Required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
   membership: z.number(),
   semester: z
@@ -108,6 +109,28 @@ export default function Update({
               </SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Email
+                    </Label>
+                    <FormControl>
+                      <Input
+                        id="name"
+                        type="name"
+                        placeholder={member.name}
+                        {...field}
+                        className="col-span-3"
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-3 text-right" />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="email"
