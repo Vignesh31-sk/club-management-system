@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     '_member',
     '_faculty',
     '_event',
-    'rest_framework'
+    'rest_framework',
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [

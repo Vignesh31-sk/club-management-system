@@ -10,23 +10,23 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { getClubs } from "@/lib/getClubs";
 import { useToast } from "@/components/ui/use-toast";
 import CreateMember from "./create";
+import { Club, getClubs } from "@/lib/clubs";
 
 export default function Clubs() {
   const plugin = React.useRef(
     Autoplay({ delay: 1000, stopOnInteraction: true })
   );
 
-  let [clubs, setClubs] = React.useState([]);
+  let [clubs, setClubs] = React.useState<Club[]>([]);
   let [currentClub, setcurrentClub] = React.useState<number | null>(null);
   const { toast } = useToast();
   const updateButtonRef = React.useRef<HTMLButtonElement>(null);
 
   React.useEffect(() => {
     getClubs()
-      .then((data: any) => {
+      .then((data: Club[]) => {
         setClubs(data);
       })
       .catch((e) => {
@@ -60,7 +60,7 @@ export default function Clubs() {
           onMouseLeave={plugin.current.reset}
         >
           <CarouselContent>
-            {clubs.map((club: any) => (
+            {clubs.map((club: Club) => (
               <CarouselItem key={club.id}>
                 <div className="flex justify-between h-full">
                   <Card className="w-full h-full">
@@ -68,7 +68,7 @@ export default function Clubs() {
                       <section className="overflow-hidden rounded-lg shadow-2xl md:grid md:grid-cols-3 h-full">
                         <img
                           alt=""
-                          src={`https://source.unsplash.com/random/?sig=${club.id}`}
+                          src={`https://random-image-pepebigotes.vercel.app/api/random-image/`}
                           className="h-full w-full object-cover md:h-full"
                         />
 

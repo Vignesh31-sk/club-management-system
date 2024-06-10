@@ -31,12 +31,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState, useEffect } from "react";
-import { getClubs } from "@/lib/getClubs";
-import { updateMember } from "@/lib/updateMember";
+import { Member, updateMember } from "@/lib/members";
+import { Club, getClubs } from "@/lib/clubs";
 
 const schema = z.object({
+  SRN: z.string(),
   name: z.string().min(1, "Name is Required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
+  mobile: z.string().min(13, "Invalid Number!"),
   membership: z.number(),
   semester: z
     .number()
@@ -48,15 +50,19 @@ export default function Update({
   member,
   triggerUpdate,
 }: {
-  member: any;
+  member: Member;
   triggerUpdate: React.RefObject<HTMLButtonElement>;
 }) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      email: "",
-      semester: 1,
+      SRN: member.SRN,
+      name: member.name,
+      email: member.email,
+      mobile: member.mobile,
+      membership: member.membership,
+      semester: member.semester,
     },
   });
 
@@ -76,16 +82,21 @@ export default function Update({
     }
   }
 
-  let [clubs, setClubs] = useState([]);
+  let [clubs, setClubs] = useState<Club[]>([]);
 
   useEffect(() => {
-    getClubs().then((data: any) => {
-      if (!data || data.error) {
-        return console.error(data?.error);
-      }
-      setClubs(data);
-      console.log("Clubs : ", data);
-    });
+    getClubs()
+      .then((data: Club[]) => {
+        setClubs(data);
+      })
+      .catch((e) => {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: e?.message,
+        });
+      });
+    console.log(clubs);
   }, []);
 
   return (
@@ -115,12 +126,11 @@ export default function Update({
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="name" className="text-right">
-                      Email
+                      Name
                     </Label>
                     <FormControl>
                       <Input
                         id="name"
-                        type="name"
                         placeholder={member.name}
                         {...field}
                         className="col-span-3"
@@ -144,6 +154,27 @@ export default function Update({
                         id="email"
                         type="email"
                         placeholder={member.email}
+                        {...field}
+                        className="col-span-3"
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-3 text-right" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="mobile"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="mobile" className="text-right">
+                      Name
+                    </Label>
+                    <FormControl>
+                      <Input
+                        id="mobile"
+                        placeholder={member.mobile}
                         {...field}
                         className="col-span-3"
                       />
@@ -195,7 +226,7 @@ export default function Update({
                         id="semester"
                         type="number"
                         className="col-span-3"
-                        placeholder={member.semester}
+                        placeholder={member.semester.toString()}
                         {...field}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />

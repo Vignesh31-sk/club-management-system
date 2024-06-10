@@ -14,7 +14,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -33,7 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getParticipants } from "@/lib/getParticipants";
 import { useToast } from "@/components/ui/use-toast";
 import {
   AlertDialog,
@@ -46,18 +44,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteParticipant } from "@/lib/deleteParticipant";
-
-export type EventParticipant = {
-  id: number;
-  event_name: string;
-  name: string;
-  email: string;
-  semester: number;
-};
+import {
+  Participant,
+  deleteParticipant,
+  getParticipants,
+} from "@/lib/participants";
 
 export default function DataTableDemo() {
-  const [data, setData] = React.useState<EventParticipant[]>([]);
+  const [data, setData] = React.useState<Participant[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -70,7 +64,7 @@ export default function DataTableDemo() {
 
   React.useEffect(() => {
     getParticipants()
-      .then((res: EventParticipant[]) => setData(res))
+      .then((res: Participant[]) => setData(res))
       .catch((error) => {
         toast({
           variant: "destructive",
@@ -98,7 +92,7 @@ export default function DataTableDemo() {
     }
   };
 
-  const columns: ColumnDef<EventParticipant>[] = [
+  const columns: ColumnDef<Participant>[] = [
     {
       accessorKey: "event_name",
       header: ({ column }) => (
@@ -121,6 +115,11 @@ export default function DataTableDemo() {
       accessorKey: "email",
       header: "Email",
       cell: ({ row }) => <div>{row.getValue("email")}</div>,
+    },
+    {
+      accessorKey: "mobile",
+      header: "Mobile",
+      cell: ({ row }) => <div>{row.getValue("mobile")}</div>,
     },
     {
       accessorKey: "semester",
@@ -231,7 +230,7 @@ export default function DataTableDemo() {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-11/12 m-3">
       <div className="flex items-center py-4 space-x-4">
         <Input
           placeholder="Filter by event name..."

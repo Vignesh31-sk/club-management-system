@@ -1,11 +1,13 @@
 from django.db import models
 from django.forms import ValidationError
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Student(models.Model):
     SRN = models.CharField(primary_key=True, max_length=50)
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
+    mobile = PhoneNumberField()
     semester = models.IntegerField()
     membership = models.ForeignKey('_club.Club', on_delete=models.CASCADE)
 

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 class Club(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    description = models.TextField(max_length=200)
     president = models.OneToOneField(
         '_member.Student',
         null=True,

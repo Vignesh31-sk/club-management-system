@@ -25,12 +25,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { createMember } from "@/lib/createMember";
+import { createMember } from "@/lib/members";
 
 const schema = z.object({
   SRN: z.string().min(1, "SRN is required"),
-  Name: z.string().min(3, "Name is Required"),
+  name: z.string().min(3, "Name is Required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
+  mobile: z.string().min(13, "Mobile number is required"),
+  membership: z.number(),
   semester: z
     .number()
     .min(1, "Semester must be at least 1")
@@ -48,17 +50,14 @@ export default function CreateMember({
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      SRN: "",
-      Name: "",
-      email: "",
-      semester: 1,
+      membership: club_id,
     },
   });
 
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
       console.log(values);
-      const response = await createMember(values, club_id);
+      const response = await createMember(values);
       console.log(response);
       toast({
         title: response?.tittle,
@@ -105,7 +104,7 @@ export default function CreateMember({
                     <FormControl>
                       <Input
                         id="SRN"
-                        placeholder="R22EI023"
+                        placeholder="Enter your SRN"
                         {...field}
                         className="col-span-3"
                       />
@@ -117,16 +116,16 @@ export default function CreateMember({
 
               <FormField
                 control={form.control}
-                name="Name"
+                name="name"
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="Name" className="text-right">
+                    <Label htmlFor="name" className="text-right">
                       Name
                     </Label>
                     <FormControl>
                       <Input
-                        id="Name"
-                        placeholder="Vignesh S"
+                        id="name"
+                        placeholder="Enter your Name"
                         {...field}
                         className="col-span-3"
                       />
@@ -148,7 +147,28 @@ export default function CreateMember({
                       <Input
                         id="email"
                         type="email"
-                        placeholder="vignesh31.sk@gmail.com"
+                        placeholder="Enter your Email"
+                        {...field}
+                        className="col-span-3"
+                      />
+                    </FormControl>
+                    <FormMessage className="col-span-3 text-right" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="mobile"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="mobile" className="text-right">
+                      Mobile
+                    </Label>
+                    <FormControl>
+                      <Input
+                        id="mobile"
+                        placeholder="Enter you Mobile number with country code"
                         {...field}
                         className="col-span-3"
                       />
@@ -171,7 +191,6 @@ export default function CreateMember({
                         id="semester"
                         type="number"
                         className="col-span-3"
-                        placeholder="4"
                         {...field}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />

@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Event(models.Model):
@@ -25,6 +26,7 @@ class Event(models.Model):
 class Participant(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
+    mobile = PhoneNumberField()
     semester = models.SmallIntegerField()
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 

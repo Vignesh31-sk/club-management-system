@@ -2,20 +2,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import Update from "./update";
-import { getMembers } from "@/lib/getMembers";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { Member, getMembers } from "@/lib/members";
 
 export default function Members() {
-  let [members, setMembers] = useState([]);
-  let [currentMember, setcurrentMember] = useState(null);
+  let [members, setMembers] = useState<Member[]>([]);
+  let [currentMember, setcurrentMember] = useState<Member | null>(null);
   const updateButtonRef = useRef<HTMLButtonElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     console.log("UseEffect 1 !");
     getMembers()
-      .then((items: any) => {
+      .then((items: Member[]) => {
         setMembers(items);
       })
       .catch((error) => {
@@ -42,10 +42,10 @@ export default function Members() {
   return (
     <>
       <br></br>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
-        {members.map((students: any, index) => (
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8 m-3">
+        {members.map((students: Member, index) => (
           <div key={students.SRN}>
-            <Card className="py-4">
+            <Card className="py-4 mb-3">
               <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <p className="text-tiny uppercase font-bold">
                   {students.club_name}
@@ -58,7 +58,7 @@ export default function Members() {
                   isZoomed
                   alt="Card background"
                   className="object-cover rounded-xl"
-                  src={`https://source.unsplash.com/random/?sig=${students.SRN}`}
+                  src={`https://random-image-pepebigotes.vercel.app/api/random-image/`}
                   width={270}
                   height={180}
                   style={{
