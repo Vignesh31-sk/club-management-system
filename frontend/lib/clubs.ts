@@ -6,6 +6,7 @@ export interface Club {
   description: string;
   president: string | null;
   president_name?: string;
+  image: string | null;
 }
 
 const API = "http://localhost:8000/api/clubs/";

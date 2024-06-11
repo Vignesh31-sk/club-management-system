@@ -66,9 +66,22 @@ export default function Update({
     },
   });
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
-      const promise = await updateMember(values, member);
+      const formData = new FormData();
+      formData.append("SRN", member.SRN);
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("mobile", values.mobile);
+      formData.append("semester", values.semester.toString());
+      formData.append("membership", values.membership.toString());
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+      console.log(formData);
+      const promise = await updateMember(formData, member);
       toast({
         title: promise?.tittle,
         description: promise?.message,
@@ -98,6 +111,12 @@ export default function Update({
       });
     console.log(clubs);
   }, []);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
 
   return (
     <Sheet>
@@ -236,6 +255,24 @@ export default function Update({
                 )}
               />
             </div>
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="image" className="text-right">
+                Image
+              </Label>
+              <div className="col-span-3">
+                <input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    handleImageChange(e);
+                  }}
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+            </div>
+            <br></br>
             <SheetFooter>
               <SheetClose asChild>
                 <Button type="submit" disabled={!form.formState.isValid}>

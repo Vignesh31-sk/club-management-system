@@ -6,6 +6,8 @@ from _club.views import ClubViewSet, clubs
 from _member.views import StudentViewSet, members
 from _faculty.views import FacultyViewSet, faculty
 from _event.views import EventViewSet, ParticipantViewSet, event, participants
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 router = DefaultRouter()
@@ -24,3 +26,5 @@ urlpatterns = [
     path('event/', event, name='event'),
     path('participant/', participants, name='participant'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

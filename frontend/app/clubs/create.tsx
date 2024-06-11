@@ -26,6 +26,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createMember } from "@/lib/members";
+import { useState } from "react";
 
 const schema = z.object({
   SRN: z.string().min(1, "SRN is required"),
@@ -54,10 +55,22 @@ export default function CreateMember({
     },
   });
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
-      console.log(values);
-      const response = await createMember(values);
+      const formData = new FormData();
+      formData.append("SRN", values.SRN);
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("mobile", values.mobile);
+      formData.append("semester", values.semester.toString());
+      formData.append("membership", values.membership.toString());
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+      console.log(formData);
+      const response = await createMember(formData);
       console.log(response);
       toast({
         title: response?.tittle,
@@ -71,6 +84,12 @@ export default function CreateMember({
       });
     }
   }
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedImage(event.target.files[0]);
+    }
+  };
 
   return (
     <Sheet>
@@ -200,6 +219,23 @@ export default function CreateMember({
                 )}
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="image" className="text-right">
+                Image
+              </Label>
+              <div className="col-span-3">
+                <input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    handleImageChange(e);
+                  }}
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </div>
+            </div>
+            <br></br>
             <SheetFooter>
               <SheetClose asChild>
                 <Button type="submit" disabled={!form.formState.isValid}>

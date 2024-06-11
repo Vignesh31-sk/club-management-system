@@ -3,6 +3,11 @@ from django.forms import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+def upload_image(instance, filename):
+    ext = filename.split('.')[-1]
+    return f'members/{instance.SRN}.{ext}'
+
+
 class Student(models.Model):
     SRN = models.CharField(primary_key=True, max_length=50)
     name = models.CharField(max_length=50)
@@ -10,6 +15,7 @@ class Student(models.Model):
     mobile = PhoneNumberField()
     semester = models.IntegerField()
     membership = models.ForeignKey('_club.Club', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=upload_image, blank=True, null=True)
 
     def __str__(self):
         return self.name

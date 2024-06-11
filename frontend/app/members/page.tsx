@@ -58,7 +58,10 @@ export default function Members() {
                   isZoomed
                   alt="Card background"
                   className="object-cover rounded-xl"
-                  src={`https://random-image-pepebigotes.vercel.app/api/random-image/`}
+                  src={
+                    students.image ||
+                    `https://random-image-pepebigotes.vercel.app/api/random-image/`
+                  }
                   width={270}
                   height={180}
                   style={{

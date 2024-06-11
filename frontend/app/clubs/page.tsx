@@ -68,7 +68,10 @@ export default function Clubs() {
                       <section className="overflow-hidden rounded-lg shadow-2xl md:grid md:grid-cols-3 h-full">
                         <img
                           alt=""
-                          src={`https://random-image-pepebigotes.vercel.app/api/random-image/`}
+                          src={
+                            club.image ||
+                            `https://random-image-pepebigotes.vercel.app/api/random-image/`
+                          }
                           className="h-full w-full object-cover md:h-full"
                         />
 

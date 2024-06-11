@@ -1,5 +1,5 @@
 "use server";
-
+import axios from "axios";
 export interface Member {
   SRN: string;
   name: string;
@@ -8,31 +8,26 @@ export interface Member {
   semester: number;
   membership: number;
   club_name?: string;
+  image: string | null;
 }
 
 const API = "http://localhost:8000/api/students/";
 
-export const createMember = async (member: Member) => {
+export const createMember = async (form: FormData) => {
   try {
-    const response = await fetch(API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        SRN: member.SRN,
-        name: member.name,
-        email: member.email,
-        mobile: member.mobile,
-        semester: member.semester,
-        membership: member.membership,
-      }),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log(errorData);
-      throw Error(JSON.stringify(errorData));
-    }
+    await axios
+      .post(API, form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch(async (error: any) => {
+        throw Error(error);
+      });
+
     return {
       tittle: "Congradulations !",
       message: "We have added you to the CLub !",
@@ -57,32 +52,20 @@ export const getMembers = async () => {
   }
 };
 
-export const updateMember = async (updated: Member, current: Member) => {
-  console.log("Email : ", updated.email);
-  console.log("Semester : ", updated.semester);
-  console.log("Membership : ", updated.membership);
-  console.log("SRN : ", current.SRN);
+export const updateMember = async (updated: FormData, current: Member) => {
   try {
-    const response = await fetch(`${API + current.SRN}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        SRN: current.SRN,
-        name: updated.name,
-        email: updated.email,
-        mobile: updated.mobile,
-        semester: updated.semester,
-        membership: updated.membership,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log(errorData);
-      throw Error(JSON.stringify(errorData));
-    }
+    await axios
+      .put(`${API + current.SRN}/`, updated, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error: any) => {
+        throw Error(error);
+      });
     return { tittle: "Congraulations !", message: "Updation Success" };
   } catch (error: any) {
     throw Error(error);
